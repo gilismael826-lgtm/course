@@ -1,0 +1,27 @@
+@startuml 协作图_串口设备连接
+skinparam nodesep 50
+skinparam ranksep 50
+
+rectangle ":System" as System
+rectangle ":UIManager" as UIManager
+rectangle ":DeviceManager" as DeviceManager
+rectangle ":SerialPort" as SerialPort
+rectangle ":Device" as Device
+
+System -right-> UIManager : 1:validatePortID(portID)
+UIManager -down-> System : 1.1:portIDValid
+System -down-> DeviceManager : 2:connectToDevice(portID)
+DeviceManager -down-> SerialPort : 2.1:open(portID)
+SerialPort -down-> Device : 2.2:establishConnection()
+Device -down-> Device : 2.3:setConnected(true)
+Device -up-> SerialPort : 2.4:startListening()
+SerialPort -up-> DeviceManager : 2.5:connectionSuccess
+DeviceManager -up-> System : 3:updateConnectionStatus("已连接")
+System -right-> UIManager : 4:updateDeviceIndicator("绿色")
+UIManager -down-> UIManager : 4.1:displayDeviceInfo()
+
+legend right
+  图 2 串口设备连接协作图
+endlegend
+
+@enduml

@@ -1,0 +1,39 @@
+@startuml 协作图_模型训练与评估
+skinparam nodesep 50
+skinparam ranksep 50
+
+rectangle ":System" as System
+rectangle ":AnnotationManager" as AnnotationManager
+rectangle ":ModelManager" as ModelManager
+rectangle ":SVMModel" as SVMModel
+rectangle ":TrainingThread" as TrainingThread
+rectangle ":UIManager" as UIManager
+
+System -down-> AnnotationManager : 1:getLabeledData()
+AnnotationManager -down-> System : 1.1:labeledDataSet
+System -right-> ModelManager : 2:validateParameters(params)
+ModelManager -down-> System : 2.1:parametersValid=true
+System -down-> ModelManager : 3:createSVMModel()
+ModelManager -down-> SVMModel : 3.1:newInstance()
+SVMModel -down-> ModelManager : 3.2:modelCreated
+System -right-> TrainingThread : 4:start()
+TrainingThread -down-> SVMModel : 5:extractFeatures(dataSet)
+SVMModel -down-> TrainingThread : 5.1:featuresExtracted
+TrainingThread -down-> SVMModel : 6:trainSVM()
+SVMModel -down-> TrainingThread : 6.1:trainingComplete
+TrainingThread -up-> System : 7:updateProgress(progress)
+System -down-> UIManager : 7.1:displayTrainingProgress()
+TrainingThread -right-> SVMModel : 8:saveModelFile()
+SVMModel -up-> TrainingThread : 8.1:saved
+TrainingThread -up-> System : 9:trainingFinished
+System -right-> ModelManager : 10:evaluateModel()
+ModelManager -down-> SVMModel : 10.1:generateEvaluationMetrics()
+SVMModel -up-> ModelManager : 10.2:evaluationMetrics
+ModelManager -up-> System : 11:generateEvaluationReport()
+System -right-> UIManager : 12:displayEvaluationMetrics()
+
+legend right
+  图 5 模型训练与评估协作图
+endlegend
+
+@enduml

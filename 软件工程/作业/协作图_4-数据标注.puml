@@ -1,0 +1,30 @@
+@startuml 协作图_数据标注
+skinparam nodesep 50
+skinparam ranksep 50
+
+rectangle ":System" as System
+rectangle ":SignalProcessor" as SignalProcessor
+rectangle ":UIManager" as UIManager
+rectangle ":AnnotationManager" as AnnotationManager
+rectangle ":Annotation" as Annotation
+rectangle ":GestureType" as GestureType
+
+System -down-> SignalProcessor : 1:checkAcquisitionStatus()
+SignalProcessor -down-> System : 1.1:isAcquiring=true
+System -right-> UIManager : 2:getCurrentGestureType()
+UIManager -down-> System : 2.1:gestureTypeSelected
+System -down-> AnnotationManager : 3:createAnnotation()
+AnnotationManager -down-> Annotation : 3.1:newInstance(gestureType)
+Annotation -down-> Annotation : 3.2:setStartTime(timestamp)
+Annotation -down-> Annotation : 3.3:setGestureType(gestureType)
+Annotation -up-> AnnotationManager : 3.4:annotationCreated
+AnnotationManager -up-> System : 4:setAnnotationStatus("进行中")
+System -right-> UIManager : 5:highlightGestureType()
+UIManager -down-> UIManager : 5.1:startTimeCounter()
+AnnotationManager -right-> SignalProcessor : 6:associateAnnotation(annotation)
+
+legend right
+  图 4 数据标注协作图
+endlegend
+
+@enduml

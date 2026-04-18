@@ -1,0 +1,32 @@
+@startuml 协作图_实时信号采集与显示
+skinparam nodesep 50
+skinparam ranksep 50
+
+rectangle ":System" as System
+rectangle ":DeviceManager" as DeviceManager
+rectangle ":SignalProcessor" as SignalProcessor
+rectangle ":SignalData" as SignalData
+rectangle ":WaveformDisplay" as WaveformDisplay
+rectangle ":UIManager" as UIManager
+rectangle ":Device" as Device
+
+System -down-> DeviceManager : 1:checkConnection()
+DeviceManager -down-> System : 1.1:isConnected=true
+System -right-> SignalProcessor : 2:createSignalData()
+SignalProcessor -down-> SignalData : 2.1:newInstance()
+SignalData -down-> SignalProcessor : 2.2:signalDataCreated
+SignalProcessor -up-> System : 3:startAcquisitionThread()
+System -down-> DeviceManager : 4:startDataReceiving()
+DeviceManager -down-> Device : 4.1:receiveDataStream()
+Device -up-> DeviceManager : 4.2:dataPacket
+DeviceManager -right-> SignalProcessor : 5:pushData(packet)
+SignalProcessor -down-> SignalProcessor : 6:processSignal()
+SignalProcessor -down-> WaveformDisplay : 7:updateWaveform()
+WaveformDisplay -down-> UIManager : 7.1:refreshDisplay()
+System -right-> UIManager : 8:updateStatusIndicator("运行中")
+
+legend right
+  图 3 实时信号采集与显示协作图
+endlegend
+
+@enduml

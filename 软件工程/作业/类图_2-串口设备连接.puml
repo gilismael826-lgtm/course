@@ -1,0 +1,45 @@
+@startuml 类图_串口设备连接
+title 图 2 串口设备连接类图
+
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 11
+
+class System {
+    -status: String
+    +setStatus(status: String): void
+}
+
+class UIManager {
+    -deviceIndicator: JLabel
+    +updateDeviceIndicator(status: String): void
+    +displayDeviceInfo(): void
+}
+
+class DeviceManager {
+    -serialPort: SerialPort
+    -isConnected: boolean
+    +connectToDevice(portID: String): void
+    +updateConnectionStatus(status: String): void
+}
+
+class SerialPort {
+    -portID: String
+    -baudRate: int
+    +open(portID: String): void
+    +close(): void
+}
+
+class Device {
+    -deviceID: String
+    -isConnected: boolean
+    +setConnected(connected: boolean): void
+    +establishConnection(): void
+    +startListening(): void
+}
+
+System --> UIManager : uses
+System --> DeviceManager : uses
+DeviceManager --> SerialPort : uses
+SerialPort --> Device : connects
+
+@enduml

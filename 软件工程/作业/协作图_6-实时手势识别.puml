@@ -1,0 +1,38 @@
+@startuml 协作图_实时手势识别
+skinparam nodesep 50
+skinparam ranksep 50
+
+rectangle ":System" as System
+rectangle ":ModelManager" as ModelManager
+rectangle ":DeviceManager" as DeviceManager
+rectangle ":SignalProcessor" as SignalProcessor
+rectangle ":SVMModel" as SVMModel
+rectangle ":RecognitionResult" as RecognitionResult
+rectangle ":UIManager" as UIManager
+
+System -down-> ModelManager : 1:checkModelLoaded()
+ModelManager -down-> System : 1.1:modelAvailable=true
+System -right-> DeviceManager : 2:checkDataAcquisition()
+DeviceManager -down-> System : 2.1:isAcquiring=true
+System -down-> ModelManager : 3:loadSVMModel()
+ModelManager -down-> SVMModel : 3.1:getModel()
+SVMModel -up-> ModelManager : 3.2:modelLoaded
+System -right-> SignalProcessor : 4:startRecognitionThread()
+SignalProcessor -down-> RecognitionResult : 4.1:createBuffer()
+RecognitionResult -up-> SignalProcessor : 4.2:bufferReady
+SignalProcessor -down-> DeviceManager : 5:getRealtimeSignal()
+DeviceManager -down-> SignalProcessor : 5.1:signalData
+SignalProcessor -down-> SignalProcessor : 6:preprocessSignal()
+SignalProcessor -down-> SignalProcessor : 7:extractFeatures()
+SignalProcessor -right-> SVMModel : 8:predict(features)
+SVMModel -down-> SignalProcessor : 8.1:predictionResult
+SignalProcessor -down-> RecognitionResult : 9:addResult(result)
+RecognitionResult -right-> UIManager : 10:updateRecognitionDisplay()
+System -down-> UIManager : 11:checkConfidenceThreshold()
+UIManager -down-> System : 11.1:lowConfidenceWarning
+
+legend right
+  图 6 实时手势识别协作图
+endlegend
+
+@enduml

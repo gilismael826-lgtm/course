@@ -1,0 +1,62 @@
+@startuml 类图_实时信号采集与显示
+title 图 3 实时信号采集与显示类图
+
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 11
+
+class System {
+    -status: String
+    +setStatus(status: String): void
+}
+
+class DeviceManager {
+    -isConnected: boolean
+    +checkConnection(): boolean
+    +receiveDataStream(): DataPacket
+}
+
+class SignalProcessor {
+    -signalData: SignalData
+    +createSignalData(): SignalData
+    +processSignal(): void
+    +updateWaveform(display: WaveformDisplay): void
+}
+
+class SignalData {
+    -timestamp: long
+    -data: double[]
+    +getTimestamp(): long
+    +getData(): double[]
+}
+
+class WaveformDisplay {
+    -waveformPanel: JPanel
+    -scaleFactor: double
+    +updateWaveform(data: SignalData): void
+    +refreshDisplay(): void
+}
+
+class UIManager {
+    -statusIndicator: JLabel
+    +updateStatusIndicator(status: String): void
+}
+
+class Device {
+    -isConnected: boolean
+    +receiveDataStream(): DataPacket
+}
+
+class DataPacket {
+    -data: byte[]
+    -timestamp: long
+    +getData(): byte[]
+}
+
+System --> DeviceManager : uses
+System --> SignalProcessor : uses
+System --> UIManager : uses
+DeviceManager --> Device : uses
+SignalProcessor --> SignalData : creates
+SignalProcessor --> WaveformDisplay : updates
+
+@enduml
