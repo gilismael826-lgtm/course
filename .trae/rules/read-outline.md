@@ -1,6 +1,5 @@
 ---
-alwaysApply: false
-description: 开始某一章节学习的时候
+alwaysApply: true
 ---
 # 强制阅读大纲规则
 
